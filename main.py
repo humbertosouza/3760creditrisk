@@ -10,8 +10,7 @@
 from gcloud import storage
 from oauth2client.service_account import ServiceAccountCredentials
 import os
-import requests
-from requests_toolbelt.multipart import decoder
+
 
 
 def hello_world(request):
@@ -67,5 +66,3 @@ def run_model(clean_input, trained_model):
   """
   return ''
 
-
-print (process_request(''))
