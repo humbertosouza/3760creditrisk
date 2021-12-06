@@ -1,16 +1,24 @@
 # Function dependencies, for example:
 # package>=version
-gcloud
+#gcloud
 oauth2client
-werkzeug
+#requests-toolbelt
+
+#io
+#os
+#sys
+#picke
+#warnings
+#datetime
 google-cloud-storage
-pickle
+google-cloud-datastore
+google-cloud-firestore
 sklearn
 seaborn
 pandas
 numpy
 xgboost
-warnings
+
 
 
 
