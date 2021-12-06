@@ -3,11 +3,16 @@
 # Check invalid and missing file
 # Check valid file reply
 
-import io
+
 from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
+import datetime
 from werkzeug import secure_filename
 from google.cloud import storage
+from google.cloud import datastore
+from google.cloud import firestore
+
+import io
 import os
 import sys
 
@@ -50,8 +55,10 @@ def test_all():
     print('file content: '+ text_content)
     return jsonify(res)
 
-@app.route('/storage', methods = ['POST']) 
-def test_storage():
+
+
+@app.route('/get_credit_score', methods = ['POST']) 
+def process_request():
   
 
   credential_path = "/home/humberto/gcloud/svc_credituser_key.json"
@@ -60,7 +67,8 @@ def test_storage():
   storage_client = storage.Client()
   bucket = storage_client.get_bucket('credit-risk-bucket')
   fileContent = request.files['record']
-  blob = bucket.blob(secure_filename('function_code_new_'+fileContent.filename))
+  #blob = bucket.blob(secure_filename('function_code_new_'+fileContent.filename))
+  blob = bucket.blob('function_code_new_'+fileContent.filename)
   file_content = request.files['record'].read()
   blob.upload_from_string(file_content.decode('utf-8'))
 
@@ -73,9 +81,45 @@ def test_storage():
 
   result = "Approved" if credit_score[0] == 0 else "Reproved"
 
-  print('{"score":"'+result+'","probability":"'+str(credit_score[1])+'"}')
+  print('{"score":"'+result+'","default_probability":"'+str(credit_score[1])+'"}')
 
-  return '{"score":"'+result+'","probability":"'+str(credit_score[1])+'"}'
+  #print(request)
+  
+  store_log(request, result,str(credit_score[1]))
+
+  return '{"score":"'+result+'","default_probability":"'+str(credit_score[1])+'"}'
+
+def store_log(request,result, probability):
+  # JSONFY
+  record_data = '"cr_request_origin":"' + str(request.remote_addr) + '",' + \
+    '"cr_request_headers":"' + str(request.headers) + '",' + \
+    '"cr_request_datetime":"' + str(datetime.datetime.now()) + '",' + \
+    '"cr_request_environ":"' + str(request.environ)+'"})' 
+  print(record_data)
+  client = datastore.Client(namespace='CREDITASSESSMENT')
+  key = client.key("Keys")
+
+  # Create an unsaved Entity object, and tell Datastore not to index the
+  # `description` field
+  task = datastore.Entity(key, exclude_from_indexes=["record_data"])
+
+  # Apply new field values and save the Task entity to Datastore
+  task.update(
+    {
+      "last_updated": datetime.datetime.now(tz=datetime.timezone.utc),
+      "remote_ip": str(request.remote_addr),
+      "record_data": record_data,
+      "active": True,
+      "result": result,
+      "probability": probability,
+      "billed": False,
+      "id":0
+    }
+    )
+  client.put(task)
+     
+  print(task.key)
+  return task.key  
 
 @app.route('/')
 def hello():
@@ -132,7 +176,7 @@ def request_cleanup(file_content):
   # ===
   storage_client = storage.Client()
   bucket = storage_client.get_bucket('credit-risk-bucket')
-  fileContent = request.files['record']
+  #fileContent = request.files['record']
   blob = bucket.blob('function-code/train_columns_pv1.pkl')
   blob = blob.download_as_string()
  
