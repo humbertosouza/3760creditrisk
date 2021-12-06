@@ -2,6 +2,15 @@
 # package>=version
 gcloud
 oauth2client
+werkzeug
+google-cloud-storage
+pickle
+sklearn
+seaborn
+pandas
+numpy
+xgboost
+warnings
 
 
 
