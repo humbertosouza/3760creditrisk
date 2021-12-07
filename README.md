@@ -9,7 +9,9 @@ Humberto Ribeiro de Souza
 ## About the Problem
 
 This repository contains the PPTX/PDF depicting the problem, solution and chosen architecture. Overall, a developed model was hypothetically approved by a company to go live on cloud.
-The PDF file can be accessed [here.](./CreditScoreAssessmentPresentation.pdf) 
+The PDF file can be accessed [here].(./CreditScoreAssessmentPresentation.pdf) 
+
+A Word document close to a SOW format is also attached. It focus on the premises taken when the project started and was updated accordingly. It does not contain timelines or budget information. It contains the CLI for configuring a non-Google Linux VM. It can be dowloaded [here.](./3760-Term%20Project%20-%20Credit%20Risk%20Assessment.docx)
 
 ## Results
 
@@ -21,14 +23,14 @@ The POST method can be called from an authorized service account at the endpoint
 
 `http://<gcplocation>/get_credt_score`
 
-. The expected return is
+The expected return is
 ```javascript
 {"status":"Aproved","default_probability":"0.213467"}
 ```
 
 ## Discussion
 
-For traceability, the transactions are saved in a NoSQL document-like database. This is believed to be useful for billing queries at low cost. In addition to it, the same structure can be used for audito purposes, for it contains non-sensitive data of the credit applicants still providing typical audit requests. If a given request cannot be provided by an existing endpoint, it can still be queried.
+For traceability, the transactions are saved in a NoSQL document-like database. This is believed to be useful for billing queries at low cost. In addition to it, the same structure can be used for audit purposes, for it contains non-sensitive data of the credit applicants still providing typical audit requests. If a given request cannot be provided by an existing endpoint, it can still be queried.
 
 ## TODOs
 
