@@ -3,11 +3,13 @@
 ## For sharing project files related to 3760 - Credit Risk Assessment
 
 Ali Ghorbani
+
 Humberto Ribeiro de Souza
 
 ## About the Problem
 
 This repository contains the PPTX/PDF depicting the problem, solution and chosen architecture. Overall, a developed model was hypothetically approved by a company to go live on cloud.
+The PDF file can be accessed [here.](./CreditScoreAssessmentPresentation.pdf) 
 
 ## Results
 
@@ -20,9 +22,9 @@ The POST method can be called from an authorized service account at the endpoint
 `http://<gcplocation>/get_credt_score`
 
 . The expected return is
-'''javascript
+```javascript
 {"status":"Aproved","default_probability":"0.213467"}
-'''
+```
 
 ## Discussion
 
