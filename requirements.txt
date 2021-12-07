@@ -1,7 +1,0 @@
-# Function dependencies, for example:
-# package>=version
-gcloud
-oauth2client
-
-
-

@@ -1,0 +1,24 @@
+# Function dependencies, for example:
+# package>=version
+#gcloud
+oauth2client
+#requests-toolbelt
+
+#io
+#os
+#sys
+#picke
+#warnings
+#datetime
+google-cloud-storage
+google-cloud-datastore
+google-cloud-firestore
+sklearn
+seaborn
+pandas
+numpy
+xgboost
+
+
+
+

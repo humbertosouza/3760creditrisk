@@ -67,7 +67,8 @@ def process_request():
   storage_client = storage.Client()
   bucket = storage_client.get_bucket('credit-risk-bucket')
   fileContent = request.files['record']
-  #blob = bucket.blob(secure_filename('function_code_new_'+fileContent.filename))
+  # As the name is generated internally, the next line is not required.
+  #blob = bucket.blob(secure_filename('function_code_new_'+fileContent.filename)) 
   blob = bucket.blob('function_code_new_'+fileContent.filename)
   file_content = request.files['record'].read()
   blob.upload_from_string(file_content.decode('utf-8'))
@@ -90,7 +91,7 @@ def process_request():
   return '{"score":"'+result+'","default_probability":"'+str(credit_score[1])+'"}'
 
 def store_log(request,result, probability):
-  # JSONFY
+ 
   record_data = '"cr_request_origin":"' + str(request.remote_addr) + '",' + \
     '"cr_request_headers":"' + str(request.headers) + '",' + \
     '"cr_request_datetime":"' + str(datetime.datetime.now()) + '",' + \
@@ -98,16 +99,18 @@ def store_log(request,result, probability):
   print(record_data)
   client = datastore.Client(namespace='CREDITASSESSMENT')
   key = client.key("Keys")
+  logged_user = request.form.get('logged_user')
 
   # Create an unsaved Entity object, and tell Datastore not to index the
-  # `description` field
+  # `record_data` field
   task = datastore.Entity(key, exclude_from_indexes=["record_data"])
 
-  # Apply new field values and save the Task entity to Datastore
+  # Apply new field values and save the task entity to Datastore
   task.update(
     {
       "last_updated": datetime.datetime.now(tz=datetime.timezone.utc),
       "remote_ip": str(request.remote_addr),
+      "logged_user": logged_user,
       "record_data": record_data,
       "active": True,
       "result": result,
@@ -116,9 +119,8 @@ def store_log(request,result, probability):
       "id":0
     }
     )
-  client.put(task)
-     
-  print(task.key)
+  client.put(task)    
+
   return task.key  
 
 @app.route('/')

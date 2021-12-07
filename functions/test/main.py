@@ -5,6 +5,7 @@ import sys
 import pickle
 import pandas as pd 
 import numpy as np
+import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -18,28 +19,65 @@ from google.cloud import storage
 from google.cloud import datastore
 from google.cloud import firestore
 
-def process_request(request):
-  
+def process_request(request):  
 
   storage_client = storage.Client()
   bucket = storage_client.get_bucket('credit-risk-bucket')
+  # Write/overwrite the incoming file
   fileContent = request.files['record']
   blob = bucket.blob('function_code_new_'+fileContent.filename)
   file_content = request.files['record'].read()
   blob.upload_from_string(file_content.decode('utf-8'))
 
   #b = bytes(mystring, 'utf-8')
+  #Cleans and feature engineer the arrived dataset
   clean_input = request_cleanup(file_content.decode('utf-8'))    
 
-  trained_model = load_model_data()
+  # Load the trained model 
+  trained_model = load_model_data(request.files['record'])
 
+  # Runs the model against the requested record to assess
   credit_score = run_model(clean_input, trained_model)
 
-  result = "Approved" if credit_score[0] == 0 else "Reproved"
+  result = "Approved" if credit_score[0] == 0 else "Declined"
 
-  print('{"score":"'+result+'","default_probability":"'+str(credit_score[1])+'"}')
-
+  # Store the request log in Firestore in Datastore mode
+  store_log(request, result,str(credit_score[1]))
+  
   return '{"score":"'+result+'","default_probability":"'+str(credit_score[1])+'"}'
+
+def store_log(request,result, probability):
+ 
+  record_data = '"cr_request_origin":"' + str(request.remote_addr) + '",' + \
+    '"cr_request_headers":"' + str(request.headers) + '",' + \
+    '"cr_request_datetime":"' + str(datetime.datetime.now()) + '",' + \
+    '"cr_request_environ":"' + str(request.environ)+'"})' 
+
+  client = datastore.Client(namespace='CREDITASSESSMENT')
+  key = client.key("Keys")
+  logged_user = request.form.get('logged_user')
+
+  # Create an unsaved Entity object, and tell Datastore not to index the
+  # `record_data` field
+  task = datastore.Entity(key, exclude_from_indexes=["record_data"])
+
+  # Apply new field values and save the task entity to Datastore
+  task.update(
+    {
+      "last_updated": datetime.datetime.now(tz=datetime.timezone.utc),
+      "remote_ip": str(request.remote_addr),
+      "logged_user": logged_user,
+      "record_data": record_data,
+      "active": True,
+      "result": result,
+      "probability": probability,
+      "billed": False,
+      "id":0
+    }
+    )
+  client.put(task)
+     
+  return task.key  
 
 def request_cleanup(file_content):
   """ 
@@ -85,8 +123,7 @@ def request_cleanup(file_content):
   #load modelled columns from model (173 columns sample)
   # ===
   storage_client = storage.Client()
-  bucket = storage_client.get_bucket('credit-risk-bucket')
-  fileContent = request.files['record']
+  bucket = storage_client.get_bucket('credit-risk-bucket') 
   blob = bucket.blob('function-code/train_columns_pv1.pkl')
   blob = blob.download_as_string()
  
@@ -136,21 +173,3 @@ def run_model(clean_input, trained_model):
   pred_prob = pred[0]
 
   return pred_class, pred_prob
-
-
-def hello_world(request):
-    """Responds to any HTTP request.
-    Args:
-        request (flask.Request): HTTP request object.
-    Returns:
-        The response text or any set of values that can be turned into a
-        Response object using
-        `make_response <http://flask.pocoo.org/docs/1.0/api/#flask.Flask.make_response>`.
-    """
-    request_json = request.get_json()
-    if request.args and 'message' in request.args:
-        return request.args.get('message')
-    elif request_json and 'message' in request_json:
-        return request_json['message']
-    else:
-        return f'Hello World!'
