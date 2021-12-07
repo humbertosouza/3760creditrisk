@@ -3,6 +3,7 @@
 ## For sharing project files related to 3760 - Credit Risk Assessment
 
 Ali Ghorbani
+
 Humberto Ribeiro de Souza
 
 ## About the Problem
@@ -20,6 +21,7 @@ The POST method can be called from an authorized service account at the endpoint
 `http://<gcplocation>/get_credt_score`
 
 . The expected return is
+
 '''javascript
 {"status":"Aproved","default_probability":"0.213467"}
 '''
