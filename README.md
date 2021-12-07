@@ -23,9 +23,30 @@ The POST method can be called from an authorized service account at the endpoint
 
 `http://<gcplocation>/get_credt_score`
 
-The expected return is
+A form-data must be sent in the body having as parameters
+
+record: "single-record-file.csv"
+logged_user: SSO or logged user from the source system. E.g. johnsmith@outlook.com
+
+The record field is mandatory. The expected file format can be found on [funcitons/record_eval1.csv](./functions/record_eval1.csv)
+
+Auth Data must have a bearer token. This endpoint is intended to query an Google Cloud Platform endpoint and expects a service account to be set up and authorized for the services it requires. The standard utilized in this project follows svc_servicename standard.
+
+If querying via curl, use  
+
+```bash
+<pre>curl -L  -H &quot;Authorization: bearer $(gcloud auth print-identity-token)&quot; --data-binary @record_req1.csv &quot;https://<server_address>/get_credit_score&quot;</pre>
+```
+
+If running it locally, it will trigger Flask and server it at 127.0.0.1:5000. Please have in mind that gcloud sdk and the environment variables must be set for this to work.
+
+
+### Return
+
+The expected return is the status analysis and the default probability in a JSON format as follows.
+
 ```javascript
-{"status":"Aproved","default_probability":"0.213467"}
+{"status":"Approved","default_probability":"0.213467"}
 ```
 
 ## Discussion
