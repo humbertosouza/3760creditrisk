@@ -22,9 +22,9 @@ The POST method can be called from an authorized service account at the endpoint
 
 . The expected return is
 
-'''javascript
+```javascript
 {"status":"Aproved","default_probability":"0.213467"}
-'''
+```
 
 ## Discussion
 
