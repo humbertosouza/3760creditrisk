@@ -35,7 +35,7 @@ Auth Data must have a bearer token. This endpoint is intended to query an Google
 If querying via curl, use  
 
 ```bash
-<pre>curl -L  -H &quot;Authorization: bearer $(gcloud auth print-identity-token)&quot; --data-binary @record_req1.csv &quot;https://<server_address>/get_credit_score&quot;</pre>
+$curl -L  -H "Authorization: bearer $(gcloud auth print-identity-token)"; --data-binary @record_req1.csv "https://<server_address>/get_credit_score"
 ```
 
 If running it locally, it will trigger Flask and server it at 127.0.0.1:5000. Please have in mind that gcloud sdk and the environment variables must be set for this to work.
