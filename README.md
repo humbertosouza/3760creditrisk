@@ -8,7 +8,7 @@ Humberto Ribeiro de Souza
 ## About the Problem
 
 This repository contains the PPTX/PDF depicting the problem, solution and chosen architecture. Overall, a developed model was hypothetically approved by a company to go live on cloud.
-The PDF file can be accessed [here].(./CreditScoreAssessmentPresentation.pdf). 
+The PDF file can be accessed [here.](./CreditScoreAssessmentPresentation.pdf). 
 
 ## Results
 
