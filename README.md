@@ -9,7 +9,7 @@ Humberto Ribeiro de Souza
 ## About the Problem
 
 This repository contains the PPTX/PDF depicting the problem, solution and chosen architecture. Overall, a developed model was hypothetically approved by a company to go live on cloud.
-The PDF file can be accessed [here].(./CreditScoreAssessmentPresentation.pdf) 
+The PDF file can be accessed [here.](./CreditScoreAssessmentPresentation.pdf) 
 
 A Word document close to a SOW format is also attached. It focus on the premises taken when the project started and was updated accordingly. It does not contain timelines or budget information. It contains the CLI for configuring a non-Google Linux VM. It can be dowloaded [here.](./3760-Term%20Project%20-%20Credit%20Risk%20Assessment.docx)
 
