@@ -32,13 +32,16 @@ The record field is mandatory. The expected file format can be found on [funcito
 
 Auth Data must have a bearer token. This endpoint is intended to query an Google Cloud Platform endpoint and expects a service account to be set up and authorized for the services it requires. The standard utilized in this project follows svc_servicename standard.
 
-If querying via curl, use  
+If running it locally, it will trigger Flask and server it at 127.0.0.1:5000. Please have in mind that gcloud sdk and the environment variables must be set for this to work.
+
+If querying with curl, use  
 
 ```bash
 $curl -L  -H "Authorization: bearer $(gcloud auth print-identity-token)"; --data-binary @record_req1.csv "https://<server_address>/get_credit_score"
 ```
 
-If running it locally, it will trigger Flask and server it at 127.0.0.1:5000. Please have in mind that gcloud sdk and the environment variables must be set for this to work.
+Please note that when setting up the cloud function, the endpoint will change accordingly, so the endpoint above is reference for testing purposes. Production endpoints will contain the version of it. e.g. /get_credit_score_v1
+
 
 
 ### Return
